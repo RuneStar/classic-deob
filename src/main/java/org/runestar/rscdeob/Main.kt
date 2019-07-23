@@ -52,6 +52,7 @@ private fun deob(src: Path) {
             CfnReplacer,
             RemoveRethrows,
             RemoveDeadCode,
+            RemoveCounters,
             Renamer
     )
     val classes = transformer.transform(readClasses(tempInDir))
