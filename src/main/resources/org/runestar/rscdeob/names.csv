@@ -51,8 +51,8 @@ h.s,osName
 h.g,osNameLowerCase
 h.m,userHome
 h.c,systemEventQueue
-h.w,microSoftMouse
-h.x,microSoftDisplay
+h.w,microsoftMouse
+h.x,microsoftDisplay
 h.l,javaMouse
 h.t,javaDisplay
 h.i,setFocusTraversalKeysEnabled
@@ -72,11 +72,11 @@ w.X,bitIndex
 mb.N,socket
 mb.T,input
 mb.L,output
-n,MicroSoftDisplay
+n,MicrosoftDisplay
 n.a(IILjava/awt/Frame;BII)V,enter
 n.a(ILjava/awt/Frame;)V,exit
 n.a(I)[I,listmodes
-u,MicroSoftMouse
+u,MicrosoftMouse
 u.a(IBI)V,movemouse
 u.a(ZLjava/awt/Component;I)V,showcursor
 d,JavaMouse
@@ -93,3 +93,5 @@ pa.a(B)La;,first
 pa.a(I)La;,next
 ja.r,calendar
 ca,AbstractSound
+o.fc,client
+o.ec,applet
