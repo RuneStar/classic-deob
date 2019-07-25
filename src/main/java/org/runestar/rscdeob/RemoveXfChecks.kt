@@ -17,7 +17,7 @@ object RemoveXfChecks : Transformer.Single {
                 if (klass.name != "fa") {
                     m.instructions.remove(insn0.next)
                     m.instructions.remove(insn0)
-                    m.maxStack--
+                    m.maxLocals--
                 }
                 val insns = m.instructions.iterator()
                 for (insn in insns) {

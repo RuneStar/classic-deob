@@ -53,6 +53,7 @@ private fun deob(src: Path) {
             RemoveRethrows,
             RemoveDeadCode,
             RemoveXfChecks,
+            RemoveUnusedMath,
             UndoComplementComparisons,
             RemoveCounters,
             Renamer
