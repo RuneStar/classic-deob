@@ -1,10 +1,7 @@
 package org.runestar.rscdeob
 
 import org.objectweb.asm.Opcodes
-import org.objectweb.asm.tree.AbstractInsnNode
 import org.objectweb.asm.tree.ClassNode
-import org.objectweb.asm.tree.InsnNode
-import org.objectweb.asm.tree.IntInsnNode
 import org.objectweb.asm.tree.LdcInsnNode
 
 object ShiftFix : Transformer.Single {
@@ -26,12 +23,5 @@ object ShiftFix : Transformer.Single {
             }
         }
         return klass
-    }
-
-    private fun loadInt(n: Int): AbstractInsnNode {
-        return when (n) {
-            in -1..5 -> InsnNode(n + 3)
-            else -> IntInsnNode(Opcodes.BIPUSH, n)
-        }
     }
 }

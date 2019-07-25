@@ -12,7 +12,6 @@ import org.objectweb.asm.Opcodes.PUTSTATIC
 import org.objectweb.asm.tree.AbstractInsnNode
 import org.objectweb.asm.tree.ClassNode
 import org.objectweb.asm.tree.FieldInsnNode
-import org.objectweb.asm.tree.IntInsnNode
 import org.objectweb.asm.tree.LdcInsnNode
 import org.objectweb.asm.tree.MethodNode
 import java.lang.AssertionError
@@ -52,7 +51,7 @@ object DecryptStrings : Transformer.Single {
                 val insns = m.instructions.iterator()
                 for (insn in insns) {
                     if (insn is FieldInsnNode && insn.name == stringsField.name && insn.desc == stringsField.desc) {
-                        val idx = intValue(insn.next)
+                        val idx = intValue(insn.next)!!
                         val s = strings[idx]
                         m.instructions.insertBefore(insn, LdcInsnNode(s))
                         insns.remove()
@@ -109,7 +108,7 @@ object DecryptStrings : Transformer.Single {
     private fun key1(m: MethodNode): Int {
         for (insn in m.instructions) {
             if (insn.opcode == Opcodes.CALOAD) {
-                return intValue(insn.next)
+                return intValue(insn.next)!!
             }
         }
         throw AssertionError()
@@ -120,7 +119,7 @@ object DecryptStrings : Transformer.Single {
         var i = -2
         for (insn in m.instructions) {
             if (isIntValue(insn)) {
-                if (i >= 0) keys[i] = intValue(insn)
+                if (i >= 0) keys[i] = intValue(insn)!!
                 i++
             }
         }
@@ -129,14 +128,6 @@ object DecryptStrings : Transformer.Single {
 
     private fun isIntValue(insn: AbstractInsnNode): Boolean {
         return insn.opcode in ICONST_M1..ICONST_5 || insn.type == AbstractInsnNode.INT_INSN
-    }
-
-    private fun intValue(insn: AbstractInsnNode): Int {
-        return when (insn.type) {
-            AbstractInsnNode.INSN -> insn.opcode - 3
-            AbstractInsnNode.INT_INSN -> (insn as IntInsnNode).operand
-            else -> throw AssertionError()
-        }
     }
 
     private fun decrypt(s: String, key1: Int, key2: IntArray): String {
