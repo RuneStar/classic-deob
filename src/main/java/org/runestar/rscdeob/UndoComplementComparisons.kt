@@ -25,12 +25,10 @@ object UndoComplementComparisons : Transformer.Single {
                         val candidates = ArrayList<AbstractInsnNode>()
                         var k = i - 1
                         while (candidates.size < 2) {
-                            val f1 = frames[k]
-                            val f2 = frames[k + 1]
                             val n = insns[k]
-                            if (stacked(f2) && ((isXor(n) && n.previous != null && isMinus1(n.previous)) || integerValue(n) != null)) {
+                            if (intOnStack(frames[k + 1]) && ((isXor(n) && n.previous != null && isMinus1(n.previous)) || integerValue(n) != null)) {
                                 candidates.add(n)
-                            } else if (f1.stackSize == 0) {
+                            } else if (frames[k].stackSize == 0) {
                                 return@forEachIndexed
                             }
                             k--
@@ -42,7 +40,7 @@ object UndoComplementComparisons : Transformer.Single {
                                 val rep = when (u) {
                                     is Int -> loadInt(u.inv())
                                     is Long -> loadLong(u.inv())
-                                    else -> throw AssertionError()
+                                    else -> error(u)
                                 }
                                 m.instructions.set(c, rep)
                             } else if (isXor(c)) {
@@ -60,10 +58,10 @@ object UndoComplementComparisons : Transformer.Single {
         return klass
     }
 
-    private fun stacked(f: Frame<BasicValue>): Boolean {
+    private fun intOnStack(f: Frame<BasicValue>): Boolean {
         val stackSize = f.stackSize
         if (stackSize !in 1..2) return false
-        val ts = List(stackSize) { f.getStack(it).type }
+        val ts = Array(stackSize) { f.getStack(it).type }
         return ts.all { it == INT_TYPE } || ts.all { it == LONG_TYPE }
     }
 

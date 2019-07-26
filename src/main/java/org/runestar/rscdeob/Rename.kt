@@ -4,7 +4,7 @@ import org.objectweb.asm.commons.ClassRemapper
 import org.objectweb.asm.commons.Remapper
 import org.objectweb.asm.tree.ClassNode
 
-object Renamer : Transformer.Single, Remapper() {
+object Rename : Transformer.Single, Remapper() {
 
     private val names = javaClass.getResource("names.csv")
             .openStream()

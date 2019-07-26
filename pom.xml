@@ -75,11 +75,6 @@
             <version>0.145</version>
         </dependency>
         <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>27.1-jre</version>
-        </dependency>
-        <dependency>
             <groupId>org.jd</groupId>
             <artifactId>jd-core</artifactId>
             <version>1.0.7</version>

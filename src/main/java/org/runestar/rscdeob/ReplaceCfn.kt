@@ -6,7 +6,7 @@ import org.objectweb.asm.tree.ClassNode
 import org.objectweb.asm.tree.LdcInsnNode
 import org.objectweb.asm.tree.MethodInsnNode
 
-object CfnReplacer : Transformer.Single {
+object ReplaceCfn : Transformer.Single {
 
     override fun transform(klass: ClassNode): ClassNode {
         klass.methods.forEach { m ->

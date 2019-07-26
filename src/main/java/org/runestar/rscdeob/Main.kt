@@ -47,16 +47,16 @@ private fun deob(src: Path) {
     ZipUtil.unpack(src.toFile(), tempInDir.toFile())
     val transformer = Transformer.Composite(
             FieldResolver,
-            ShiftFix,
+            MaskShifts,
             DecryptStrings,
-            CfnReplacer,
+            ReplaceCfn,
             RemoveRethrows,
             RemoveDeadCode,
             RemoveXfChecks,
             RemoveUnusedMath,
             UndoComplementComparisons,
             RemoveCounters,
-            Renamer
+            Rename
     )
     val classes = transformer.transform(readClasses(tempInDir))
     writeClasses(classes, tempOutDir)

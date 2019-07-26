@@ -8,13 +8,11 @@ object RemoveRethrows : Transformer.Single {
 
     override fun transform(klass: ClassNode): ClassNode {
         for (m in klass.methods) {
-//            println(klass.name + " "+ m.name +" " + m.desc)
             val handlers = m.tryCatchBlocks.mapTo(HashSet()) { it.handler }
             for (handler in handlers) {
                 var insns = m.instructions.toArray().asList()
                 val start = insns.indexOf(handler) + 1
-                insns = insns.subList(start, insns.size)
-                insns = insns.takeWhile { it.type != AbstractInsnNode.LABEL }
+                insns = insns.subList(start, insns.size).takeWhile { it.type != AbstractInsnNode.LABEL }
                 if (insns.isEmpty() || insns.last().opcode != Opcodes.ATHROW) continue
                 insns.forEach { m.instructions.remove(it) }
             }

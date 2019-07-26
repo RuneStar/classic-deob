@@ -11,9 +11,7 @@ object RemoveDeadCode : Transformer.Single {
             val frames = Analyzer(BasicInterpreter()).analyze(klass.name, m)
             val insns = m.instructions.toArray()
             for (i in frames.indices) {
-                if (frames[i] == null) {
-                    m.instructions.remove(insns[i])
-                }
+                if (frames[i] == null) m.instructions.remove(insns[i])
             }
         }
         return klass

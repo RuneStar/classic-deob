@@ -3,12 +3,16 @@ kb.e,modewhat
 kb.d,message
 kb.c,cause
 vb,GameShell
+vb.Z,xOffset
+vb.Fb,yOffset
 vb.c,graphics
 vb.gb,CP1252
 vb.n,timesRoman15
 vb.Sb,helveticaBold13
 vb.h,helvetica12
 client,Client
+client.Tj,appletWidth
+client.ci,appletHeight
 client.Jj,QUEST_NAMES
 client.dh,host
 client.yd,referid
