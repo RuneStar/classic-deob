@@ -1,5 +1,6 @@
 .idea/
-target
+target/
 *.iml
-*.jar
-temp*
+output/
+**/cache/
+*.json
