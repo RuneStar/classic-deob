@@ -48,7 +48,8 @@ private fun deob(input: Path, gamepack: Path, output: Path) {
             Gotos,
             RemoveDeadCode,
             UndoComplementComparisons,
-            RemoveCounters
+            RemoveCounters,
+            FixNegatives
 //            Rename
     )
     transformer.transform(temp)
