@@ -4,7 +4,7 @@ import org.objectweb.asm.Opcodes
 import org.objectweb.asm.tree.ClassNode
 import org.objectweb.asm.tree.JumpInsnNode
 
-object Gotos : Transformer.Single {
+object RemoveGotos : Transformer.Single {
 
     override fun transform(klass: ClassNode): ClassNode {
         for (m in klass.methods) {

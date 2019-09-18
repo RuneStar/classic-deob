@@ -36,17 +36,14 @@ private fun deob(input: Path, gamepack: Path, output: Path) {
     ZipUtil.unpack(gamepack.toFile(), temp.toFile())
 
     val transformer = Transformer.Composite(
-            Gotos,
-            FieldResolver,
-            MaskShifts,
+            RemoveRethrows,
             DecryptStrings,
             ReplaceCfn,
-            RemoveRethrows,
-            RemoveDeadCode,
+            FieldResolver,
+            MaskShifts,
             RemoveXfChecks,
             RemoveUnusedMath,
-            Gotos,
-            RemoveDeadCode,
+            RemoveGotos,
             UndoComplementComparisons,
             RemoveCounters,
             FixNegatives

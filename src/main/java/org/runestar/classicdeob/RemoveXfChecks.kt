@@ -3,9 +3,10 @@ package org.runestar.classicdeob
 import org.objectweb.asm.Opcodes
 import org.objectweb.asm.tree.ClassNode
 import org.objectweb.asm.tree.FieldInsnNode
+import org.objectweb.asm.tree.IincInsnNode
+import org.objectweb.asm.tree.InsnNode
 import org.objectweb.asm.tree.LabelNode
 import org.objectweb.asm.tree.VarInsnNode
-import java.lang.IllegalStateException
 
 object RemoveXfChecks : Transformer {
 
@@ -22,16 +23,24 @@ object RemoveXfChecks : Transformer {
                 if (insn1.`var` != m.maxLocals - 1) continue
                 if (insn0.owner.length <= 2) continue
 
-                // m.maxLocals--
-                // todo
+                m.maxLocals--
                 fieldNames.add("${insn0.owner}.${insn0.name}")
                 m.instructions.remove(insn0)
                 m.instructions.remove(insn1)
+
+                for (insn in m.instructions) {
+                    if (insn.opcode == Opcodes.PUTSTATIC && insn is FieldInsnNode && insn.owner == insn0.owner && insn0.name == insn.name) {
+                        m.instructions.set(insn, InsnNode(Opcodes.POP))
+                    }
+                }
+
                 val insns = m.instructions.iterator()
                 for (insn in insns) {
                     if (insn is VarInsnNode && insn.opcode == Opcodes.ILOAD && insn.`var` == insn1.`var`) {
                         insns.remove()
                         if (insns.next() is LabelNode) insns.next()
+                        insns.remove()
+                    } else if (insn is IincInsnNode && insn.`var` == insn1.`var`) {
                         insns.remove()
                     }
                 }
@@ -50,6 +59,6 @@ object RemoveXfChecks : Transformer {
                 }
             }
         }
-        return klasses
+        return RemoveDeadCode.transform(klasses)
     }
 }

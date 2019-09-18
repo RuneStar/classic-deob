@@ -7,14 +7,8 @@ object RemoveRethrows : Transformer.Single {
 
     override fun transform(klass: ClassNode): ClassNode {
         for (m in klass.methods) {
-            m.tryCatchBlocks.removeIf { it.type == "java/lang/RuntimeException" }
-            val tcbs = m.tryCatchBlocks.iterator()
-            for (tcb in tcbs) {
-                if (tcb.handler.next.opcode == Opcodes.ATHROW) {
-                    tcbs.remove()
-                }
-            }
+            m.tryCatchBlocks.removeIf { it.type == "java/lang/RuntimeException" || it.handler.next.opcode == Opcodes.ATHROW }
         }
-        return klass
+        return RemoveDeadCode.transform(klass)
     }
 }
