@@ -14,7 +14,7 @@ object MaskShifts : Transformer.Single {
                 val next = insn.next
                 val loadMasked = when (next.opcode) {
                     Opcodes.ISHL, Opcodes.ISHR, Opcodes.IUSHR -> loadInt(cst and 0x1f)
-                    Opcodes.LSHL, Opcodes.LSHR -> loadInt(cst and 0x3f)
+                    Opcodes.LSHL, Opcodes.LSHR, Opcodes.LUSHR -> loadInt(cst and 0x3f)
                     else -> continue@loop
                 }
                 m.instructions.set(insn, loadMasked)
