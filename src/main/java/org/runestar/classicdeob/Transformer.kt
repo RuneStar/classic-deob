@@ -17,7 +17,7 @@ interface Transformer {
                 try {
                     Analyzer(BasicInterpreter()).analyze(c.name, m)
                 } catch (e: Exception) {
-                    println("${c.name}.${m.name} ${m.desc}")
+                    System.err.println("${c.name}.${m.name}${m.desc}")
                     throw e
                 }
             }
