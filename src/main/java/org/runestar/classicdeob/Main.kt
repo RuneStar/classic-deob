@@ -21,19 +21,15 @@ fun main() {
     Files.walk(input).filter { it.fileName.toString() == "gamepack.jar" }.forEachClose { gamepack ->
         deob(input, gamepack, output)
     }
-    println(Duration.between(start, Instant.now()))
+    println("total: ${Duration.between(start, Instant.now())}")
 }
 
 private fun deob(input: Path, gamepack: Path, output: Path) {
-    val gameName = gamepack.parent.fileName.toString()
-    println(gameName)
+    val start = Instant.now()
     val dir = output.resolve(input.relativize(gamepack.parent))
     val temp = dir.resolve("temp")
     val outgamepack = dir.resolve("gamepack.jar")
     dir.toFile().deleteRecursively()
-    Files.createDirectories(temp)
-
-    ZipUtil.unpack(gamepack.toFile(), temp.toFile())
 
     val transformer = Transformer.Composite(
             RemoveRethrows,
@@ -48,15 +44,19 @@ private fun deob(input: Path, gamepack: Path, output: Path) {
             RemoveCounters,
             FixNegatives,
             RemoveOpaquePredicates
-//            Rename
     )
-    transformer.transform(temp)
+
+    Files.createDirectories(temp)
+    ZipUtil.unpack(gamepack.toFile(), temp.toFile())
+    writeClasses(transformer.transform(readClasses(temp)), temp)
     ZipUtil.pack(temp.toFile(), outgamepack.toFile())
 
 //    decompileCfr(outputJar, outputCfr)
 //    decompileFernflower(tempOutDir, outputFernflower)
 //    decompileJd(tempOutDir, outputJd)
 //    decompileProcyon(tempOutDir, outputProcyon)
+
+    println("${gamepack.parent.fileName}: ${Duration.between(start, Instant.now())}")
 }
 
 private fun decompileCfr(input: Path, output: Path) {

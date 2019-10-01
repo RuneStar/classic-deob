@@ -10,9 +10,9 @@ import org.objectweb.asm.tree.analysis.Analyzer
 import org.objectweb.asm.tree.analysis.SourceInterpreter
 import java.lang.AssertionError
 
-object UndoComplementComparisons : Transformer.Single {
+object UndoComplementComparisons : Transformer.Single() {
 
-    override fun transform(klass: ClassNode): ClassNode {
+    override fun transform(klass: ClassNode) {
         for (m in klass.methods) {
             val frames = Analyzer(SourceInterpreter()).analyze(klass.name, m)
             val insns = m.instructions.toArray()
@@ -55,7 +55,6 @@ object UndoComplementComparisons : Transformer.Single {
                 }
             }
         }
-        return klass
     }
 
     private fun isInv(n: AbstractInsnNode): Boolean {

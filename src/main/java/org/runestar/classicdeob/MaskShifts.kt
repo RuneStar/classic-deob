@@ -4,9 +4,9 @@ import org.objectweb.asm.Opcodes
 import org.objectweb.asm.tree.ClassNode
 import org.objectweb.asm.tree.LdcInsnNode
 
-object MaskShifts : Transformer.Single {
+object MaskShifts : Transformer.Single() {
 
-    override fun transform(klass: ClassNode): ClassNode {
+    override fun transform(klass: ClassNode) {
         for (m in klass.methods) {
             loop@ for (insn in m.instructions) {
                 if (insn !is LdcInsnNode) continue
@@ -20,6 +20,5 @@ object MaskShifts : Transformer.Single {
                 m.instructions.set(insn, loadMasked)
             }
         }
-        return klass
     }
 }

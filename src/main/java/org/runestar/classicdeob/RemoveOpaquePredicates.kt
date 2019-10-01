@@ -16,10 +16,9 @@ import org.objectweb.asm.tree.analysis.SourceInterpreter
 import java.lang.AssertionError
 import java.lang.reflect.Modifier
 
-object RemoveOpaquePredicates : Transformer {
+object RemoveOpaquePredicates : Transformer.Tree() {
 
-    override fun transform(klasses: Collection<ClassNode>): Collection<ClassNode> {
-        var classes = klasses
+    override fun transform(klasses: List<ClassNode>) {
         var changed = true
         var j = 0
         while (changed) {
@@ -59,9 +58,9 @@ object RemoveOpaquePredicates : Transformer {
                     }
                 }
             }
-            classes = RemoveDeadCode.transform(klasses)
+            RemoveDeadCode.transform(klasses)
         }
-        return RemoveGotos.transform(classes)
+        RemoveGotos.transform(klasses)
     }
 
     private fun findOpParams(klasses: Collection<ClassNode>): Map<ParamId, ParamUsage> {
@@ -198,7 +197,7 @@ object RemoveOpaquePredicates : Transformer {
 
 
     private fun isValidOpType(t: Type) = when (t) {
-        Type.INT_TYPE, Type.BYTE_TYPE, Type.BOOLEAN_TYPE, Type.SHORT_TYPE -> true
+        Type.INT_TYPE, Type.BYTE_TYPE, Type.BOOLEAN_TYPE -> true
         else -> false
     }
 

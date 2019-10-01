@@ -5,9 +5,9 @@ import org.objectweb.asm.tree.ClassNode
 import org.objectweb.asm.tree.FieldInsnNode
 import org.objectweb.asm.tree.MethodNode
 
-object RemoveCounters : Transformer {
+object RemoveCounters : Transformer.Tree() {
 
-    override fun transform(klasses: Collection<ClassNode>): Collection<ClassNode> {
+    override fun transform(klasses: List<ClassNode>) {
         for (k in klasses) {
             val fields = k.fields.iterator()
             for (f in fields) {
@@ -44,6 +44,5 @@ object RemoveCounters : Transformer {
                 }
             }
         }
-        return klasses
     }
 }

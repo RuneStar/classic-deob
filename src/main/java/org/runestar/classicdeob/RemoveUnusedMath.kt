@@ -4,9 +4,9 @@ import org.objectweb.asm.Opcodes.*
 import org.objectweb.asm.tree.ClassNode
 import org.objectweb.asm.tree.VarInsnNode
 
-object RemoveUnusedMath : Transformer.Single {
+object RemoveUnusedMath : Transformer.Single() {
 
-    override fun transform(klass: ClassNode): ClassNode {
+    override fun transform(klass: ClassNode) {
         for (m in klass.methods) {
             val loads = HashSet<Int>()
             val stores = HashMap<Int, VarInsnNode>()
@@ -35,6 +35,5 @@ object RemoveUnusedMath : Transformer.Single {
             }
 
         }
-        return klass
     }
 }

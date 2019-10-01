@@ -7,10 +7,10 @@ import org.objectweb.asm.tree.LdcInsnNode
 import org.objectweb.asm.tree.MethodNode
 import java.lang.AssertionError
 
-object DecryptStrings : Transformer.Single {
+object DecryptStrings : Transformer.Single() {
 
-    override fun transform(klass: ClassNode): ClassNode {
-        val m1 = findDecryptMethod1(klass) ?: return klass
+    override fun transform(klass: ClassNode) {
+        val m1 = findDecryptMethod1(klass) ?: return
         val m2 = findDecryptMethod2(klass) ?: throw AssertionError()
         val key1 = findKey1(m1)
         val key2 = findKey2(m2)
@@ -18,7 +18,6 @@ object DecryptStrings : Transformer.Single {
         decryptLoads(clinit, key1, key2)
         inlineStringArray(klass, clinit)
         inlineSingleString(klass, clinit)
-        return klass
     }
 
     private fun decryptLoads(m: MethodNode, key1: Int, key2: IntArray) {

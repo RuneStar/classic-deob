@@ -6,9 +6,9 @@ import org.objectweb.asm.tree.ClassNode
 import org.objectweb.asm.tree.FieldInsnNode
 import java.lang.reflect.Modifier
 
-object FieldResolver : Transformer {
+object FieldResolver : Transformer.Tree() {
 
-    override fun transform(klasses: Collection<ClassNode>): Collection<ClassNode> {
+    override fun transform(klasses: List<ClassNode>) {
         val resolver = Resolver(klasses)
         klasses.forEach { cn ->
             cn.methods.forEach { mn ->
@@ -23,8 +23,6 @@ object FieldResolver : Transformer {
                 }
             }
         }
-
-        return klasses
     }
 
     private class Resolver(classNodes: Collection<ClassNode>) {

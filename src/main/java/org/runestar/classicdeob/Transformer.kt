@@ -1,48 +1,39 @@
 package org.runestar.classicdeob
 
+import org.objectweb.asm.ClassReader
 import org.objectweb.asm.tree.ClassNode
-import org.objectweb.asm.tree.analysis.Analyzer
-import org.objectweb.asm.tree.analysis.BasicInterpreter
-import java.lang.Exception
-import java.nio.file.Path
 
 interface Transformer {
 
-    fun transform(dir: Path) {
-        val classes = readClasses(dir)
-        val classes2 = transform(classes)
-        writeClasses(classes2, dir)
-        for (c in classes2) {
-            for (m in c.methods) {
-                try {
-                    Analyzer(BasicInterpreter()).analyze(c.name, m)
-                } catch (e: Exception) {
-                    System.err.println("${c.name}.${m.name}${m.desc}")
-                    throw e
-                }
-            }
+    fun transform(classes: List<ByteArray>): List<ByteArray>
+
+    abstract class Tree : Transformer {
+
+        final override fun transform(classes: List<ByteArray>): List<ByteArray> {
+            val nodes = classes.map { ClassNode(it, ClassReader.SKIP_FRAMES or ClassReader.SKIP_DEBUG) }
+            transform(nodes)
+            // nodes.forEach { analyze(it) }
+            return nodes.map { it.toByteArray() }
         }
+
+        abstract fun transform(klasses: List<ClassNode>)
     }
 
-    fun transform(klasses: Collection<ClassNode>): Collection<ClassNode>
+    abstract class Single : Tree() {
 
-    interface Single : Transformer {
+        final override fun transform(klasses: List<ClassNode>) {
+            klasses.forEach { transform(it) }
+        }
 
-        override fun transform(klasses: Collection<ClassNode>): Collection<ClassNode> = klasses.map { transform(it) }
-
-        fun transform(klass: ClassNode): ClassNode
+        abstract fun transform(klass: ClassNode)
     }
 
     class Composite(vararg val transformers: Transformer) : Transformer {
 
-        override fun transform(dir: Path) {
-            transformers.forEach { it.transform(dir) }
-        }
-
-        override fun transform(klasses: Collection<ClassNode>): Collection<ClassNode> {
-            var ks = klasses
-            transformers.forEach { ks = it.transform(ks) }
-            return ks
+        override fun transform(classes: List<ByteArray>): List<ByteArray> {
+            var cs = classes
+            transformers.forEach { cs = it.transform(cs) }
+            return cs
         }
     }
 }

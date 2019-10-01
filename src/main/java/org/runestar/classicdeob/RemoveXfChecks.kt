@@ -8,9 +8,9 @@ import org.objectweb.asm.tree.InsnNode
 import org.objectweb.asm.tree.LabelNode
 import org.objectweb.asm.tree.VarInsnNode
 
-object RemoveXfChecks : Transformer {
+object RemoveXfChecks : Transformer.Tree() {
 
-    override fun transform(klasses: Collection<ClassNode>): Collection<ClassNode> {
+    override fun transform(klasses: List<ClassNode>) {
         val fieldNames = HashSet<String>()
         for (c in klasses) {
             for (m in c.methods) {
@@ -59,6 +59,6 @@ object RemoveXfChecks : Transformer {
                 }
             }
         }
-        return RemoveDeadCode.transform(klasses)
+        RemoveDeadCode.transform(klasses)
     }
 }

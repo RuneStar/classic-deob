@@ -5,9 +5,9 @@ import org.objectweb.asm.tree.analysis.Analyzer
 import org.objectweb.asm.tree.analysis.BasicInterpreter
 import java.lang.Exception
 
-object RemoveDeadCode : Transformer.Single {
+object RemoveDeadCode : Transformer.Single() {
 
-    override fun transform(klass: ClassNode): ClassNode {
+    override fun transform(klass: ClassNode) {
         for (m in klass.methods) {
             var changed = true // todo
             while (changed) {
@@ -22,11 +22,9 @@ object RemoveDeadCode : Transformer.Single {
                         }
                     }
                 } catch (e: Exception) {
-                    System.err.println("${klass.name}.${m.name}${m.desc}")
-                    throw e
+                    throw Exception("${klass.name}.${m.name}${m.desc}", e)
                 }
             }
         }
-        return klass
     }
 }

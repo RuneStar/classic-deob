@@ -6,9 +6,9 @@ import org.objectweb.asm.tree.ClassNode
 import org.objectweb.asm.tree.LdcInsnNode
 import org.objectweb.asm.tree.MethodInsnNode
 
-object ReplaceCfn : Transformer.Single {
+object ReplaceCfn : Transformer.Single() {
 
-    override fun transform(klass: ClassNode): ClassNode {
+    override fun transform(klass: ClassNode) {
         klass.methods.forEach { m ->
             val insns = m.instructions
             val itr = insns.iterator()
@@ -31,6 +31,5 @@ object ReplaceCfn : Transformer.Single {
                 insns.set(next, LdcInsnNode(Type.getObjectType(cst.replace('.', '/'))))
             }
         }
-        return klass
     }
 }

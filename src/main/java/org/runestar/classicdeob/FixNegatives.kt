@@ -6,9 +6,9 @@ import org.objectweb.asm.tree.InsnNode
 import org.objectweb.asm.tree.analysis.Analyzer
 import org.objectweb.asm.tree.analysis.SourceInterpreter
 
-object FixNegatives : Transformer.Single {
+object FixNegatives : Transformer.Single() {
 
-    override fun transform(klass: ClassNode): ClassNode {
+    override fun transform(klass: ClassNode) {
         for (m in klass.methods) {
             val frames = Analyzer(SourceInterpreter()).analyze(klass.name, m)
             val insns = m.instructions.toArray()
@@ -74,6 +74,5 @@ object FixNegatives : Transformer.Single {
                 }
             }
         }
-        return klass
     }
 }

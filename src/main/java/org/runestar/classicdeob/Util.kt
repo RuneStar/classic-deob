@@ -9,26 +9,25 @@ import org.objectweb.asm.tree.ClassNode
 import org.objectweb.asm.tree.InsnNode
 import org.objectweb.asm.tree.IntInsnNode
 import org.objectweb.asm.tree.LdcInsnNode
+import org.objectweb.asm.tree.analysis.Analyzer
+import org.objectweb.asm.tree.analysis.BasicInterpreter
 import org.objectweb.asm.tree.analysis.Frame
 import org.objectweb.asm.tree.analysis.Value
+import java.lang.Exception
 import java.nio.file.Files
 import java.nio.file.Path
 import java.util.stream.Stream
 
-fun loadInt(n: Int): AbstractInsnNode {
-    return when (n) {
-        in -1..5 -> InsnNode(n + 3)
-        in Byte.MIN_VALUE..Byte.MAX_VALUE -> IntInsnNode(BIPUSH, n)
-        in Short.MIN_VALUE..Short.MAX_VALUE -> IntInsnNode(SIPUSH, n)
-        else -> LdcInsnNode(n)
-    }
+fun loadInt(n: Int): AbstractInsnNode = when (n) {
+    in -1..5 -> InsnNode(n + 3)
+    in Byte.MIN_VALUE..Byte.MAX_VALUE -> IntInsnNode(BIPUSH, n)
+    in Short.MIN_VALUE..Short.MAX_VALUE -> IntInsnNode(SIPUSH, n)
+    else -> LdcInsnNode(n)
 }
 
-fun loadLong(n: Long): AbstractInsnNode {
-    return when (n) {
-        in 0..1 -> InsnNode((n + 9).toInt())
-        else -> LdcInsnNode(n)
-    }
+fun loadLong(n: Long): AbstractInsnNode = when (n) {
+    0L, 1L -> InsnNode((n + 9).toInt())
+    else -> LdcInsnNode(n)
 }
 
 fun intValue(insn: AbstractInsnNode): Int? {
@@ -44,7 +43,7 @@ fun longValue(insn: AbstractInsnNode): Long? {
     return null
 }
 
-fun <V : Value> Frame<V>.getStackLast(count: Int): List<V> = List(count) { getStack(stackSize - count + it) }
+fun <V : Value> Frame<V>.getStackLast(count: Int) = List(count) { getStack(stackSize - count + it) }
 
 fun Type.removeArgumentAt(index: Int): Type {
     val args = argumentTypes.toMutableList()
@@ -57,26 +56,41 @@ fun <T> Stream<T>.forEachClose(action: (T) -> Unit) {
     close()
 }
 
-fun readClasses(dir: Path): Collection<ClassNode> {
-    val classes = ArrayList<ClassNode>()
+fun readClasses(dir: Path): List<ByteArray> {
+    val classes = ArrayList<ByteArray>()
     Files.walk(dir).forEachClose { f ->
         if (Files.isDirectory(f) || !f.toString().endsWith(".class")) return@forEachClose
-        val reader = ClassReader(Files.readAllBytes(f))
-        val node = ClassNode()
-        reader.accept(node, ClassReader.SKIP_FRAMES or ClassReader.SKIP_DEBUG)
-        classes.add(node)
+        classes.add(Files.readAllBytes(f))
     }
     return classes
 }
 
-fun writeClasses(classes: Collection<ClassNode>, dir: Path) {
-    classes.forEach { node ->
-        val copy = ClassNode()
-        node.accept(copy)
-        val writer = ClassWriter(0)
-        node.accept(writer)
-        val file = dir.resolve(node.name + ".class")
+fun writeClasses(classes: Iterable<ByteArray>, dir: Path) {
+    classes.forEach { c ->
+        val file = dir.resolve("${ClassReader(c).className}.class")
         Files.createDirectories(file.parent)
-        Files.write(file, writer.toByteArray())
+        Files.write(file, c)
     }
+}
+
+fun analyze(classNode: ClassNode) {
+    for (m in classNode.methods) {
+        try {
+            Analyzer(BasicInterpreter()).analyze(classNode.name, m)
+        } catch (e: Exception) {
+            throw Exception("${classNode.name}.${m.name}${m.desc}", e)
+        }
+    }
+}
+
+fun ClassNode(classFile: ByteArray, parsingOptions: Int): ClassNode {
+    val c = ClassNode()
+    ClassReader(classFile).accept(c, parsingOptions)
+    return c
+}
+
+fun ClassNode.toByteArray(): ByteArray {
+    val w = ClassWriter(0)
+    accept(w)
+    return w.toByteArray()
 }

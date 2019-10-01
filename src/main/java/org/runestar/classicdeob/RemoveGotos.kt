@@ -4,9 +4,9 @@ import org.objectweb.asm.Opcodes
 import org.objectweb.asm.tree.ClassNode
 import org.objectweb.asm.tree.JumpInsnNode
 
-object RemoveGotos : Transformer.Single {
+object RemoveGotos : Transformer.Single() {
 
-    override fun transform(klass: ClassNode): ClassNode {
+    override fun transform(klass: ClassNode) {
         for (m in klass.methods) {
             val insns = m.instructions.iterator()
             for (insn in insns) {
@@ -16,6 +16,5 @@ object RemoveGotos : Transformer.Single {
                 }
             }
         }
-        return klass
     }
 }
