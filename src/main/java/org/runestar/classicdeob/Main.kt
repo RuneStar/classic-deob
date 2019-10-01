@@ -36,14 +36,13 @@ private fun deob(input: Path, gamepack: Path, output: Path) {
             DecryptStrings,
             ReplaceCfn,
             FieldResolver,
-            MaskShifts,
             RemoveXfChecks,
             RemoveUnusedMath,
-            RemoveGotos,
             UndoComplementComparisons,
             RemoveCounters,
             FixNegatives,
-            RemoveOpaquePredicates
+            RemoveOpaquePredicates,
+            MaskShifts
     )
 
     Files.createDirectories(temp)

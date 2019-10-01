@@ -60,5 +60,6 @@ object RemoveXfChecks : Transformer.Tree() {
             }
         }
         RemoveDeadCode.transform(klasses)
+        RemoveGotos.transform(klasses)
     }
 }

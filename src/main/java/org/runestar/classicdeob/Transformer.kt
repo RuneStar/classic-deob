@@ -12,7 +12,7 @@ interface Transformer {
         final override fun transform(classes: List<ByteArray>): List<ByteArray> {
             val nodes = classes.map { ClassNode(it, ClassReader.SKIP_FRAMES or ClassReader.SKIP_DEBUG) }
             transform(nodes)
-            // nodes.forEach { analyze(it) }
+            nodes.forEach { analyze(it) }
             return nodes.map { it.toByteArray() }
         }
 
