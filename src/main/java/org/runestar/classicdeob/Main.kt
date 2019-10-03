@@ -8,14 +8,13 @@ import java.io.OutputStream
 import java.io.PrintStream
 import java.nio.file.Files
 import java.nio.file.Path
-import java.nio.file.Paths
 import java.time.Duration
 import java.time.Instant
 
 fun main() {
     val start = Instant.now()
-    val input = Paths.get("input")
-    val output = Paths.get("output")
+    val input = Path.of("input")
+    val output = Path.of("output")
     Files.walk(input).filter { it.fileName.toString() == "gamepack.jar" }.forEachClose { gamepack ->
         deob(input, gamepack, output)
     }
