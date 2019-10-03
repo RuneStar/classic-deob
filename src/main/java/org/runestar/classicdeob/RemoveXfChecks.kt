@@ -20,10 +20,10 @@ object RemoveXfChecks : Transformer.Tree() {
                 insn0 as FieldInsnNode
                 if (insn1.opcode != Opcodes.ISTORE) continue
                 insn1 as VarInsnNode
-                if (insn1.`var` != m.maxLocals - 1) continue
-                if (insn0.owner.length <= 2) continue
+                if (insn1.`var` == 0 && m.maxLocals != 1) continue
+                if (insn0.owner.length <= 3) continue
 
-                m.maxLocals--
+                if (insn1.`var` == m.maxLocals - 1) m.maxLocals--
                 fieldNames.add("${insn0.owner}.${insn0.name}")
                 m.instructions.remove(insn0)
                 m.instructions.remove(insn1)

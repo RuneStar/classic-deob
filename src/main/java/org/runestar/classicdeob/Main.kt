@@ -50,10 +50,21 @@ private fun deob(input: Path, gamepack: Path, output: Path) {
     writeClasses(transformer.transform(readClasses(temp)), temp)
     ZipUtil.pack(temp.toFile(), outgamepack.toFile())
 
-//    decompileCfr(outputJar, outputCfr)
-//    decompileFernflower(tempOutDir, outputFernflower)
-//    decompileJd(tempOutDir, outputJd)
-//    decompileProcyon(tempOutDir, outputProcyon)
+//    val cfrDir = dir.resolve("cfr")
+//    Files.createDirectories(cfrDir)
+//    decompileCfr(outgamepack, cfrDir)
+
+//    val fernflowerDir = dir.resolve("fernflower")
+//    Files.createDirectories(fernflowerDir)
+//    decompileFernflower(temp, fernflowerDir)
+
+//    val jdDir = dir.resolve("jd")
+//    Files.createDirectories(jdDir)
+//    decompileJd(temp, jdDir)
+
+//    val procyonDir = dir.resolve("procyon")
+//    Files.createDirectories(procyonDir)
+//    decompileProcyon(temp, procyonDir)
 
     println("${gamepack.parent.fileName}: ${Duration.between(start, Instant.now())}")
 }
@@ -77,8 +88,8 @@ private fun decompileJd(input: Path, output: Path) {
         override fun canLoad(p0: String): Boolean = Files.exists(input.resolve("$p0.class"))
         override fun load(p0: String): ByteArray = Files.readAllBytes(input.resolve("$p0.class"))
     }
-    Files.walk(input).forEach { f ->
-        if (Files.isDirectory(f)) return@forEach
+    Files.walk(input).forEachClose { f ->
+        if (Files.isDirectory(f) || !f.toString().endsWith(".class")) return@forEachClose
         val classSimpleName = f.fileName.toString().substringBeforeLast('.')
         val outFile = output.resolve(input.relativize(f)).resolveSibling("$classSimpleName.java")
         Files.createDirectories(outFile.parent)
@@ -87,7 +98,7 @@ private fun decompileJd(input: Path, output: Path) {
         println(f)
         try {
             decompiler.decompile(loader, printer, input.relativize(f).toString().substringBeforeLast('.'))
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             e.printStackTrace()
         }
         Files.write(outFile, printer.toString().toByteArray())
@@ -96,8 +107,8 @@ private fun decompileJd(input: Path, output: Path) {
 
 private fun decompileProcyon(input: Path, output: Path) {
     val settings = DecompilerSettings.javaDefaults()
-    Files.walk(input).forEach { f ->
-        if (Files.isDirectory(f)) return@forEach
+    Files.walk(input).forEachClose { f ->
+        if (Files.isDirectory(f) || !f.toString().endsWith(".class")) return@forEachClose
         val classSimpleName = f.fileName.toString().substringBeforeLast('.')
         val outFile = output.resolve(input.relativize(f)).resolveSibling("$classSimpleName.java")
         Files.createDirectories(outFile.parent)
@@ -106,7 +117,7 @@ private fun decompileProcyon(input: Path, output: Path) {
             Files.newBufferedWriter(outFile).use { writer ->
                 Decompiler.decompile(f.toString(), PlainTextOutput(writer), settings)
             }
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             e.printStackTrace()
         }
     }
