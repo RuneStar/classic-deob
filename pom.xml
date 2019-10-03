@@ -11,15 +11,9 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <version.kotlin>1.3.50</version.kotlin>
+        <version.java>11</version.java>
         <version.asm>7.2</version.asm>
     </properties>
-
-    <repositories>
-        <repository>
-            <id>bintray</id>
-            <url>https://jcenter.bintray.com/</url>
-        </repository>
-    </repositories>
 
     <dependencies>
         <dependency>
@@ -43,24 +37,9 @@
             <version>${version.asm}</version>
         </dependency>
         <dependency>
-            <groupId>org.ow2.asm</groupId>
-            <artifactId>asm-util</artifactId>
-            <version>${version.asm}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.ow2.asm</groupId>
-            <artifactId>asm-commons</artifactId>
-            <version>${version.asm}</version>
-        </dependency>
-        <dependency>
             <groupId>org.zeroturnaround</groupId>
             <artifactId>zt-zip</artifactId>
             <version>1.13</version>
-        </dependency>
-        <dependency>
-            <groupId>org.bitbucket.mstrobel</groupId>
-            <artifactId>procyon-compilertools</artifactId>
-            <version>0.5.36</version>
         </dependency>
         <dependency>
             <groupId>fernflower</groupId>
@@ -70,14 +49,16 @@
             <systemPath>${basedir}/java-decompiler.jar</systemPath>
         </dependency>
         <dependency>
+            <groupId>procyon</groupId>
+            <artifactId>procyon</artifactId>
+            <scope>system</scope>
+            <version>1</version>
+            <systemPath>${basedir}/procyon-decompiler-0.5.36.jar</systemPath>
+        </dependency>
+        <dependency>
             <groupId>org.benf</groupId>
             <artifactId>cfr</artifactId>
             <version>0.146</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jd</groupId>
-            <artifactId>jd-core</artifactId>
-            <version>1.0.7</version>
         </dependency>
     </dependencies>
     <build>
@@ -96,7 +77,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <jvmTarget>1.8</jvmTarget>
+                    <jvmTarget>${version.java}</jvmTarget>
                 </configuration>
             </plugin>
         </plugins>

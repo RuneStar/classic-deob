@@ -59,7 +59,7 @@ fun <T> Stream<T>.forEachClose(action: (T) -> Unit) {
 fun readClasses(dir: Path): List<ByteArray> {
     val classes = ArrayList<ByteArray>()
     Files.walk(dir).forEachClose { f ->
-        if (Files.isDirectory(f) || !f.toString().endsWith(".class")) return@forEachClose
+        if (!Files.isRegularFile(f) || !f.toString().endsWith(".class")) return@forEachClose
         classes.add(Files.readAllBytes(f))
     }
     return classes

@@ -6,7 +6,7 @@ import org.objectweb.asm.tree.ClassNode
 import org.objectweb.asm.tree.FieldInsnNode
 import java.lang.reflect.Modifier
 
-object FieldResolver : Transformer.Tree() {
+object ResolveFields : Transformer.Tree() {
 
     override fun transform(klasses: List<ClassNode>) {
         val resolver = Resolver(klasses)
