@@ -24,7 +24,6 @@ fun main() {
 private fun deob(input: Path, gamepack: Path, output: Path) {
     val start = Instant.now()
     val dir = output.resolve(input.relativize(gamepack.parent))
-    val temp = dir.resolve("temp")
     val outgamepack = dir.resolve("gamepack.jar")
     dir.toFile().deleteRecursively()
 
@@ -42,11 +41,10 @@ private fun deob(input: Path, gamepack: Path, output: Path) {
             MaskShifts
     )
 
-    Files.createDirectories(temp)
-    ZipUtil.unpack(gamepack.toFile(), temp.toFile())
-    temp.resolve("META-INF").toFile().deleteRecursively()
-    writeClasses(transformer.transform(readClasses(temp)), temp)
-    ZipUtil.pack(temp.toFile(), outgamepack.toFile())
+    Files.createDirectories(dir)
+    writeClasses(transformer.transform(readClasses(gamepack)), outgamepack)
+    val classes = dir.resolve("classes")
+    ZipUtil.unpack(outgamepack.toFile(), classes.toFile())
 
 //    val cfrDir = dir.resolve("cfr")
 //    Files.createDirectories(cfrDir)
@@ -54,7 +52,7 @@ private fun deob(input: Path, gamepack: Path, output: Path) {
 
 //    val fernflowerDir = dir.resolve("fernflower")
 //    Files.createDirectories(fernflowerDir)
-//    decompileFernflower(temp, fernflowerDir)
+//    decompileFernflower(classes, fernflowerDir)
 
 //    val procyonDir = dir.resolve("procyon")
 //    Files.createDirectories(procyonDir)

@@ -13,8 +13,9 @@ import org.objectweb.asm.tree.analysis.Analyzer
 import org.objectweb.asm.tree.analysis.BasicInterpreter
 import org.objectweb.asm.tree.analysis.Frame
 import org.objectweb.asm.tree.analysis.Value
+import org.zeroturnaround.zip.ByteSource
+import org.zeroturnaround.zip.ZipUtil
 import java.lang.Exception
-import java.nio.file.Files
 import java.nio.file.Path
 import java.util.stream.Stream
 
@@ -56,21 +57,17 @@ fun <T> Stream<T>.forEachClose(action: (T) -> Unit) {
     close()
 }
 
-fun readClasses(dir: Path): List<ByteArray> {
+fun readClasses(jar: Path): List<ByteArray> {
     val classes = ArrayList<ByteArray>()
-    Files.walk(dir).forEachClose { f ->
-        if (!Files.isRegularFile(f) || !f.toString().endsWith(".class")) return@forEachClose
-        classes.add(Files.readAllBytes(f))
+    ZipUtil.iterate(jar.toFile()) { input, entry ->
+        if (!entry.name.endsWith(".class")) return@iterate
+        classes.add(input.readAllBytes())
     }
     return classes
 }
 
-fun writeClasses(classes: Iterable<ByteArray>, dir: Path) {
-    classes.forEach { c ->
-        val file = dir.resolve("${ClassReader(c).className}.class")
-        Files.createDirectories(file.parent)
-        Files.write(file, c)
-    }
+fun writeClasses(classes: Iterable<ByteArray>, jar: Path) {
+    ZipUtil.pack(classes.map { ByteSource("${ClassReader(it).className}.class", it) }.toTypedArray(), jar.toFile())
 }
 
 fun analyze(classNode: ClassNode) {
