@@ -5,6 +5,7 @@ import org.objectweb.asm.tree.ClassNode
 import org.objectweb.asm.tree.FieldInsnNode
 import org.objectweb.asm.tree.IincInsnNode
 import org.objectweb.asm.tree.InsnNode
+import org.objectweb.asm.tree.JumpInsnNode
 import org.objectweb.asm.tree.LabelNode
 import org.objectweb.asm.tree.VarInsnNode
 
@@ -38,7 +39,11 @@ object RemoveXfChecks : Transformer.Tree() {
                 for (insn in insns) {
                     if (insn is VarInsnNode && insn.opcode == Opcodes.ILOAD && insn.`var` == insn1.`var`) {
                         insns.remove()
-                        if (insns.next() is LabelNode) insns.next()
+                        var next = insns.next()
+                        if (next is LabelNode) next = insns.next()
+                        if (next.opcode == Opcodes.IFEQ) {
+                            m.instructions.insertBefore(next, JumpInsnNode(Opcodes.GOTO, (next as JumpInsnNode).label))
+                        }
                         insns.remove()
                     } else if (insn is IincInsnNode && insn.`var` == insn1.`var`) {
                         insns.remove()
