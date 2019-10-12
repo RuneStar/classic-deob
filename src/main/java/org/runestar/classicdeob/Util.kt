@@ -2,7 +2,8 @@ package org.runestar.classicdeob
 
 import org.objectweb.asm.ClassReader
 import org.objectweb.asm.ClassWriter
-import org.objectweb.asm.Opcodes.*
+import org.objectweb.asm.Opcodes.BIPUSH
+import org.objectweb.asm.Opcodes.SIPUSH
 import org.objectweb.asm.Type
 import org.objectweb.asm.tree.AbstractInsnNode
 import org.objectweb.asm.tree.ClassNode
@@ -15,7 +16,6 @@ import org.objectweb.asm.tree.analysis.Frame
 import org.objectweb.asm.tree.analysis.Value
 import org.zeroturnaround.zip.ByteSource
 import org.zeroturnaround.zip.ZipUtil
-import java.lang.Exception
 import java.nio.file.Path
 import java.util.stream.Stream
 
