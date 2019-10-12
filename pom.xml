@@ -46,14 +46,14 @@
             <artifactId>fernflower</artifactId>
             <scope>system</scope>
             <version>1</version>
-            <systemPath>${basedir}/java-decompiler.jar</systemPath>
+            <systemPath>${basedir}/libs/java-decompiler.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>procyon</groupId>
             <artifactId>procyon</artifactId>
             <scope>system</scope>
             <version>1</version>
-            <systemPath>${basedir}/procyon-decompiler-0.5.36.jar</systemPath>
+            <systemPath>${basedir}/libs/procyon-decompiler-0.5.36.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>org.benf</groupId>
