@@ -58,7 +58,11 @@ object RemoveXfChecks : Transformer.Tree() {
                 for (insn in insns) {
                     if (insn.opcode == Opcodes.GETSTATIC && insn is FieldInsnNode && "${insn.owner}.${insn.name}" == fieldName) {
                         insns.remove()
-                        if (insns.next() is LabelNode) insns.next()
+                        var next = insns.next()
+                        if (next is LabelNode) next = insns.next()
+                        if (next.opcode == Opcodes.IFEQ) {
+                            m.instructions.insertBefore(next, JumpInsnNode(Opcodes.GOTO, (next as JumpInsnNode).label))
+                        }
                         insns.remove()
                     }
                 }
