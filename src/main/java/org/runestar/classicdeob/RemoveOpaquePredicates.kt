@@ -40,12 +40,12 @@ object RemoveOpaquePredicates : Transformer.Tree() {
 
                     argVals.forEach {
                         it.invoke.desc = newDesc
-                        it.invoke.name += j
+                        //it.invoke.name += j
                         it.insns.remove(it.load)
                     }
 
                     pu.method.desc = newDesc
-                    pu.method.name += j
+                    //pu.method.name += j
                     removeLocal(pu.method, local)
                     changedMethods.add(pu.method)
 

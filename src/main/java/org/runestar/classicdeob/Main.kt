@@ -37,6 +37,7 @@ private fun deob(input: Path, gamepack: Path, output: Path) {
             UndoComplementComparisons,
             RemoveCounters,
             FixNegatives,
+            Transformer.Remap(Rename),
             RemoveOpaquePredicates,
             MaskShifts
     )

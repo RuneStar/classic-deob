@@ -31,7 +31,7 @@ interface Transformer {
         abstract fun transform(klass: ClassNode)
     }
 
-    class Renamer(val remapper: Remapper) : Transformer {
+    class Remap(val remapper: Remapper) : Transformer {
 
         override fun transform(classes: List<ByteArray>): List<ByteArray> {
             return classes.map {
