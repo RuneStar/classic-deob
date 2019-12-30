@@ -44,8 +44,9 @@ private fun deob(input: Path, gamepack: Path, output: Path) {
 
     Files.createDirectories(dir)
     writeClasses(transformer.transform(readClasses(gamepack)), outgamepack)
-    val classes = dir.resolve("classes")
-    ZipUtil.unpack(outgamepack.toFile(), classes.toFile())
+
+//    val classes = dir.resolve("classes")
+//    ZipUtil.unpack(outgamepack.toFile(), classes.toFile())
 
 //    val cfrDir = dir.resolve("cfr")
 //    Files.createDirectories(cfrDir)
